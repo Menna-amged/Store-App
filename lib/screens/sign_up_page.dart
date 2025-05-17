@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_application_2/Widgets/custom_text_field.dart';
 import 'package:flutter_application_2/Widgets/custom_button.dart';
 import 'package:flutter_application_2/screens/login_page.dart';
-import 'package:flutter_application_2/services/storage_service.dart';
 
 class SignUpPage extends StatefulWidget {
   static String id = 'SignUpPage';
@@ -13,36 +13,80 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  String? email;
-  String? password;
-  String? confirmPassword;
+  final TextEditingController emailcontroller = TextEditingController();
+  final TextEditingController passwordcontroller = TextEditingController();
+  final TextEditingController confirmpasswordcontroller = TextEditingController();
+
   bool isLoading = false;
-  List<String> registeredEmails = [];
 
   @override
-  void initState() {
-    super.initState();
-    _loadEmails();
+  void dispose() {
+    emailcontroller.dispose();
+    passwordcontroller.dispose();
+    confirmpasswordcontroller.dispose();
+    super.dispose();
   }
 
-  Future<void> _loadEmails() async {
-    registeredEmails = await StorageService.loadEmails();
-    setState(() {});
-  }
+  Future<void> RegisterUser(BuildContext context) async {
+    final email = emailcontroller.text.trim();
+    final password = passwordcontroller.text.trim();
+    final confirmpassword = confirmpasswordcontroller.text.trim();
 
-  Future<void> _registerEmail() async {
-    if (!registeredEmails.contains(email)) {
-      registeredEmails.add(email!);
-      await StorageService.saveEmails(registeredEmails);
+    if (email.isEmpty || password.isEmpty || confirmpassword.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill all fields')),
+      );
+      return;
     }
-  }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final arg = ModalRoute.of(context)?.settings.arguments;
-    if (arg is String && (email == null || email!.isEmpty)) {
-      email = arg;
+    if (password.length < 6) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Password must be at least 6 characters')),
+      );
+      return;
+    }
+
+    if (password != confirmpassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Passwords do not match')),
+      );
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Registration Successful! Please login.')),
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+      );
+    } on FirebaseAuthException catch (e) {
+      String message = 'An error occurred';
+      if (e.code == 'weak-password') {
+        message = 'The password provided is too weak.';
+      } else if (e.code == 'email-already-in-use') {
+        message = 'The account already exists for that email.';
+      } else if (e.code == 'invalid-email') {
+        message = 'Invalid email address.';
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
@@ -62,8 +106,8 @@ class _SignUpPageState extends State<SignUpPage> {
                     'assets/images/signup_image.jpg',
                     height: 200,
                   ),
-                  SizedBox(height: 32),
-                  Text(
+                  const SizedBox(height: 32),
+                  const Text(
                     'Create Account',
                     style: TextStyle(
                       fontSize: 24,
@@ -71,7 +115,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       color: Colors.black87,
                     ),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Text(
                     'Sign up to get started',
                     style: TextStyle(
@@ -79,90 +123,46 @@ class _SignUpPageState extends State<SignUpPage> {
                       color: Colors.grey[600],
                     ),
                   ),
-                  SizedBox(height: 32),
+                  const SizedBox(height: 32),
                   CustomTextField(
+                    controller: emailcontroller,
                     hintText: 'Email *',
                     inputType: TextInputType.emailAddress,
-                    onChanged: (value) {
-                      email = value;
-                    },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   CustomTextField(
+                    controller: passwordcontroller,
                     hintText: 'Password *',
                     obscureText: true,
-                    onChanged: (value) {
-                      password = value;
-                    },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   CustomTextField(
+                    controller: confirmpasswordcontroller,
                     hintText: 'Confirm Password *',
                     obscureText: true,
-                    onChanged: (value) {
-                      confirmPassword = value;
-                    },
                   ),
-                  SizedBox(height: 32),
+                  const SizedBox(height: 32),
                   CustomButton(
                     text: isLoading ? 'Signing Up...' : 'Sign Up',
-                    onTap: () async {
-                      final emailRegex = RegExp(r'^\S+@\S+\.\S+ ?$');
-                      if (email == null || email!.isEmpty || password == null || password!.isEmpty || confirmPassword == null || confirmPassword!.isEmpty) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('All fields are required.')),
-                        );
-                        return;
-                      }
-                      if (!emailRegex.hasMatch(email!)) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Please enter a valid email address.')),
-                        );
-                        return;
-                      }
-                      if (password!.length < 6) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Password must be at least 6 characters.')),
-                        );
-                        return;
-                      }
-                      if (password != confirmPassword) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Passwords do not match.')),
-                        );
-                        return;
-                      }
-                      setState(() {
-                        isLoading = true;
-                      });
-                      await Future.delayed(Duration(seconds: 1));
-                      if (registeredEmails.contains(email)) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('This email is already registered.')),
-                        );
-                        setState(() { isLoading = false; });
-                        return;
-                      }
-                      await _registerEmail();
-                      setState(() {
-                        isLoading = false;
-                      });
-                      Navigator.pushReplacementNamed(context, 'HomePage');
-                    },
+                    onTap: isLoading
+                        ? null
+                        : () {
+                            RegisterUser(context);
+                          },
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Already have an account? "),
+                      const Text("Already have an account? "),
                       GestureDetector(
                         onTap: () {
-                          Navigator.pushReplacementNamed(context, 'LoginPage');
+                          Navigator.pushReplacementNamed(context, LoginPage.id);
                         },
-                        child: Text(
+                        child: const Text(
                           'Sign in',
                           style: TextStyle(
-                            color: const Color.fromARGB(255, 244, 113, 73),
+                            color: Color.fromARGB(255, 244, 113, 73),
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -177,4 +177,4 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
     );
   }
-} 
+}

@@ -75,7 +75,7 @@ class HomePage extends StatelessWidget {
             Container(
               width: 70,
               height: 70,
-              child: Image.network(
+              child: Image.asset(
                 'assets/images/logo.jpg',
                 fit: BoxFit.cover,
               ),

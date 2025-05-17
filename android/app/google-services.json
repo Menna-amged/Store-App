@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "913694415043",
+    "project_id": "stoore-f18ae",
+    "storage_bucket": "stoore-f18ae.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:913694415043:android:cf5a9ff2fdf822cf41ea76",
+        "android_client_info": {
+          "package_name": "com.example.flutter_application_2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAxuf3BYO_oMWIDSskKOU8omBDCI_hAeQ4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

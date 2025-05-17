@@ -85,7 +85,7 @@ class HomePage extends StatelessWidget {
               'Store App',
               style: TextStyle(
                 color: Colors.black,
-                fontSize: 20,
+                fontSize: 25,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -114,21 +114,21 @@ class HomePage extends StatelessWidget {
               color: Colors.grey[300],
             ),
             ListTile(
-              leading: Icon(Icons.home),
+              leading: Icon(Icons.home,color: Color.fromARGB(255, 244, 113, 73),),
               title: Text('Home'),
               onTap: () {
                 Navigator.pushReplacementNamed(context, 'HomePage');
               },
             ),
             ListTile(
-              leading: Icon(Icons.category),
+              leading: Icon(Icons.category,color: Color.fromARGB(255, 244, 113, 73),),
               title: Text('Categories'),
               onTap: () {
                 Navigator.pushNamed(context, 'CategoriesPage');
               },
             ),
             ListTile(
-              leading: Icon(Icons.logout),
+              leading: Icon(Icons.logout,color: Color.fromARGB(255, 244, 113, 73),),
               title: Text('Sign Out'),
               onTap: () {
                 // TODO: Clear user session if implemented
@@ -150,7 +150,7 @@ class HomePage extends StatelessWidget {
                 clipBehavior: Clip.none,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  childAspectRatio: 1.5,
+                  childAspectRatio: 1,
                   crossAxisSpacing: 14,
                   mainAxisSpacing: 90,
                 ),

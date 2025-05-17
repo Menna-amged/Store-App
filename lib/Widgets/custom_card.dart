@@ -30,7 +30,9 @@ class CustomCard extends StatelessWidget {
               ],
             ),
             child: Card(
+              
               color: Colors.white,
+            
               elevation: 5,
               child: Padding(
                 padding: const EdgeInsets.symmetric(
@@ -38,6 +40,7 @@ class CustomCard extends StatelessWidget {
                   vertical: 16,
                 ),
                 child: Column(
+                  
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -45,7 +48,7 @@ class CustomCard extends StatelessWidget {
                       product.title.split(' ').take(3).join(' '),
                       style: TextStyle(color: Colors.grey, fontSize: 16),
                     ),
-                    SizedBox(height: 3),
+                    SizedBox(height: 0),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -83,9 +86,9 @@ class CustomCard extends StatelessWidget {
             ),
           ),
           Positioned(
-            top: -67,
+            top: -70,
             right: 20,
-            child: Image.network(product.image, height: 130, width: 130),
+            child: Image.network(product.image, height: 120, width: 130),
           ),
         ],
       ),

@@ -11,7 +11,7 @@ class ProductDetailsPage extends StatelessWidget {
     final product = ModalRoute.of(context)!.settings.arguments as ProductModle;
     
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 246, 246, 246),
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 246, 246, 246),
         elevation: 0,
@@ -19,7 +19,8 @@ class ProductDetailsPage extends StatelessWidget {
         surfaceTintColor: Colors.transparent,
         title: Text(
           'Product Details',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: Colors.black ,fontSize: 25, fontWeight: FontWeight.bold),
+          
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),

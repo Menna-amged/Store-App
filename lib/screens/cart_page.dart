@@ -21,7 +21,7 @@ class CartPage extends StatelessWidget {
         ),
         title: Text(
           'Shopping Cart',
-          style: TextStyle(color: Colors.black),
+          style: TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         actions: [
@@ -50,7 +50,8 @@ class CartPage extends StatelessWidget {
                     'Your cart is empty',
                     style: TextStyle(
                       fontSize: 18,
-                      color: Colors.grey,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
                     ),
                   ),
                 ],
